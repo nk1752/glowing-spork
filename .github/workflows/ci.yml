@@ -8,13 +8,30 @@ on:
     branches:
       - main
 
+env:
+  CI: true
+  time: ${{ github.run_number }}
+
 permissions:
   contents: read
 
 jobs:
+  env-display:
+    name: Environment Display
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Display Environment
+        id: env-display
+        run: |
+          echo "Time: ${{ env.time }}"
+          echo "CI: ${{ env.CI }}"
+          
   test-typescript:
     name: TypeScript Tests
     runs-on: ubuntu-latest
+
+    needs: env-display
 
     steps:
       - name: Checkout
@@ -57,7 +74,7 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 2000
+          milliseconds: ${{ env.time }}
 
       - name: Print Output
         id: output
